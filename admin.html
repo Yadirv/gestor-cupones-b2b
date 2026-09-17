@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+</head>
+<body>
+    <div id="app-root" class="w-full h-full min-h-screen relative">
+
+        <!-- LOGIN SCREEN -->
+        <section id="login-view" class="min-h-screen bg-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+          <!-- background effects -->
+          <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM0ZjQ2ZTUiIGZpbGwtb3BhY2l0eT0iMC4xNSI+PHBhdGggZD0iTTM2IDM0djI2aDJWMzRoLTJ6bS0xOCAwdi0yeC04aDJ2OGgtMnptLTYtdi0yaC0ydi0yaC0ydi0yaDJ2MmgydjJtMiAySDEwdjI2aDJWMzR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+          <div class="absolute -top-[150px] -right-[100px] w-[500px] h-[500px] bg-indigo-600 rounded-full blur-[120px] opacity-20 pointer-events-none"></div>
+          <div class="absolute -bottom-[150px] -left-[100px] w-[500px] h-[500px] bg-sky-500 rounded-full blur-[120px] opacity-10 pointer-events-none"></div>
+
+          <div class="w-full max-w-[400px] bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-8 md:p-10 relative z-10">
+            <div class="text-center mb-8">
+              <div class="inline-flex items-center justify-center w-14 h-14 bg-indigo-500 rounded-2xl text-white mb-5 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+              </div>
+              <h1 class="text-2xl font-bold text-white mb-1">Acceso Administrativo</h1>
+              <p class="text-sm font-medium text-slate-400">Panel de Control Global</p>
+            </div>
+
+            <form id="form-login">
+              <div class="mb-5">
+                <label for="admin-user" class="block font-semibold text-xs text-slate-300 uppercase tracking-wider mb-2">Usuario</label>
+                <input type="text" id="admin-user" class="w-full p-3.5 bg-white/5 border border-white/10 rounded-xl outline-none focus:border-indigo-500 focus:bg-white/10 transition-all text-white placeholder-slate-500" placeholder="admin@sistema.com" required>
+              </div>
+              <div class="mb-8">
+                <label for="admin-pass" class="block font-semibold text-xs text-slate-300 uppercase tracking-wider mb-2">Contraseña</label>
+                <input type="password" id="admin-pass" class="w-full p-3.5 bg-white/5 border border-white/10 rounded-xl outline-none focus:border-indigo-500 focus:bg-white/10 transition-all text-white placeholder-slate-500" placeholder="••••••••" required>
+              </div>
+              <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)]">
+                Iniciar Sesión
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- DASHBOARD SCREEN -->
+        <section id="dashboard-view" class="hidden">
+        <div class="admin-container p-6 bg-slate-50 min-h-screen">
+          <header class="mb-8">
+            <h1 class="text-2xl font-bold text-slate-900">Panel de Administración</h1>
+            <p class="text-slate-500">Gestión de clientes B2B y métricas globales</p>
+          </header>
+          <!-- TABS -->
+          <div class="flex border-b border-slate-200 mb-6">
+            <button id="tab-btn-clientes" class="px-6 py-3 font-semibold text-indigo-600 border-b-2 border-indigo-600 focus:outline-none transition-colors" onclick="switchTab('clientes')">
+              👥 Directorio B2B
+            </button>
+            <button id="tab-btn-dashboard" class="px-6 py-3 font-medium text-slate-500 hover:text-slate-800 border-b-2 border-transparent focus:outline-none transition-colors" onclick="switchTab('dashboard')">
+              📊 Dashboard Analytics
+            </button>
+          </div>
+
+          <!-- TAB CONTENT: CLIENTES B2B -->
+          <div id="tab-content-clientes">
+            <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+              <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h2 class="text-lg font-semibold text-slate-900">Directorio de Clientes B2B</h2>
+                <div class="flex gap-3">
+                  <input type="search" id="search-clientes" placeholder="🔍 Buscar cliente..." class="p-2 border border-slate-200 rounded-lg outline-none focus:border-indigo-500 text-sm w-full sm:w-auto" oninput="filtrarClientes()">
+                  <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold text-sm transition-all shadow-md whitespace-nowrap" onclick="openModalCliente('add')">
+                    + Nuevo Cliente
+                  </button>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[800px]">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider">
+                      <th class="p-4 font-semibold">Negocio</th>
+                      <th class="p-4 font-semibold">Contacto</th>
+                      <th class="p-4 font-semibold">C.C / NIT</th>
+                      <th class="p-4 font-semibold">Celular / Correo</th>
+                      <th class="p-4 font-semibold">Tipo</th>
+                      <th class="p-4 font-semibold">Registro</th>
+                      <th class="p-4 font-semibold text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100" id="tbody-clientes">
+                    <tr><td colspan="7" class="text-center p-8 text-slate-400">Cargando directorio...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <!-- TAB CONTENT: DASHBOARD ANALYTICS -->
+          <div id="tab-content-dashboard" class="hidden">
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <div class="text-slate-400 mb-1 text-2xl">👥</div>
+                <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Usuarios Totales</h3>
+                <p class="text-3xl font-black text-slate-900 mt-1" id="kpi-usuarios">—</p>
+              </div>
+              <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <div class="text-slate-400 mb-1 text-2xl">🎫</div>
+                <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Cupones Reclamados</h3>
+                <p class="text-3xl font-black text-slate-900 mt-1" id="kpi-reclamaciones">—</p>
+              </div>
+              <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <div class="text-slate-400 mb-1 text-2xl">✅</div>
+                <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Cupones Activos</h3>
+                <p class="text-3xl font-black text-slate-900 mt-1" id="kpi-cupones">—</p>
+              </div>
+              <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                <div class="text-slate-400 mb-1 text-2xl">🏪</div>
+                <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Clientes B2B</h3>
+                <p class="text-3xl font-black text-slate-900 mt-1" id="kpi-clientes">—</p>
+              </div>
+            </section>
+
+            <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">📍 Usuarios por Ciudad</h3>
+                <div class="relative h-64"><canvas id="chart-ciudades"></canvas></div>
+              </div>
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">🐾 Distribución por Mascota</h3>
+                <div class="relative h-64"><canvas id="chart-mascotas"></canvas></div>
+              </div>
+              <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-2">
+                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">🏆 Top Cupones más Reclamados</h3>
+                <div class="relative h-64"><canvas id="chart-top-cupones"></canvas></div>
+              </div>
+            </section>
+          </div>
+
+          <!-- MODAL NUEVO CLIENTE -->
+          <div id="modal-cliente" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 transform scale-95 transition-transform duration-300 overflow-hidden flex flex-col max-h-[90vh]">
+              <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="text-lg font-bold text-slate-800">➕ Nuevo Cliente B2B</h3>
+                <button onclick="closeModal('modal-cliente')" class="text-slate-400 hover:text-slate-600 focus:outline-none">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+              </div>
+              <div class="p-6 overflow-y-auto">
+                <form id="form-cliente" onsubmit="guardarCliente(event)">
+                  <input type="hidden" id="form-action" value="add_client">
+                  <input type="hidden" id="f-original-cc-nit" value="">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nombre del Negocio <span class="text-rose-500">*</span></label>
+                      <input id="f-negocio" type="text" required class="w-full p-3 border border-slate-200 rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all" placeholder="Pet Palace S.A.S">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Nombre del Contacto <span class="text-rose-500">*</span></label>
+                      <input id="f-contacto" type="text" required class="w-full p-3 border border-slate-200 rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all" placeholder="María García">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">C.C o NIT <span class="text-rose-500">*</span></label>
+                      <input id="f-cc-nit" type="text" required maxlength="15" class="w-full p-3 border border-slate-200 rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all" placeholder="900123456">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Celular (WhatsApp) <span class="text-rose-500">*</span></label>
+                      <input id="f-celular" type="tel" required maxlength="12" class="w-full p-3 border border-slate-200 rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all" placeholder="3001234567">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Correo Electrónico <span class="text-rose-500">*</span></label>
+                      <input id="f-correo" type="email" required class="w-full p-3 border border-slate-200 rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all" placeholder="contacto@negocio.com">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Ciudad <span class="text-rose-500">*</span></label>
+                      <select id="f-ciudad" required class="w-full p-3 border border-slate-200 rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all bg-white">
+                        <option value="">Cargando ciudades...</option>
+                      </select>
+                    </div>
+                    <div class="md:col-span-2">
+                      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Dirección <span class="text-rose-500">*</span></label>
+                      <input id="f-direccion" type="text" required class="w-full p-3 border border-slate-200 rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all" placeholder="Calle 123 # 45-67">
+                    </div>
+                    <div class="md:col-span-2">
+                      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Logo del Cliente (Opcional)</label>
+                      <div class="flex items-center gap-4">
+                        <div id="logo-preview-container" class="w-16 h-16 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center bg-slate-50 overflow-hidden shrink-0">
+                          <img id="logo-preview-img" src="" class="w-full h-full object-cover hidden" alt="Preview">
+                          <span id="logo-preview-placeholder" class="text-xs text-slate-400">Sin Logo</span>
+                        </div>
+                        <input id="f-logo" type="file" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-all cursor-pointer" onchange="previewLogo(event)">
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Sitio Web</label>
+                      <input id="f-sitioweb" type="url" class="w-full p-3 border border-slate-200 rounded-xl focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all" placeholder="https://www.minegocio.com">
+                    </div>
+                    <div class="md:col-span-2">
+                      <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-bold text-slate-600 uppercase">Redes Sociales</label>
+                        <button type="button" onclick="agregarFilaRedSocial()" class="text-xs font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-3 py-1 rounded-full transition-colors flex items-center gap-1">+ Añadir red</button>
+                      </div>
+                      <div id="redes-container" class="space-y-3">
+                        <!-- Las filas de redes se inyectan aquí con JS -->
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-3">Tipo de Establecimiento <span class="text-rose-500">*</span></label>
+                    <div class="grid grid-cols-2 gap-3" id="tipo-grid">
+                      <label class="cursor-pointer">
+                        <input type="radio" name="tipo_establecimiento" value="Peluquería Pet" class="peer hidden" required checked>
+                        <div class="p-3 border-2 border-slate-200 rounded-xl peer-checked:border-indigo-600 peer-checked:bg-indigo-50 text-center transition-all">
+                          <span class="text-2xl block mb-1">✂️</span><span class="text-sm font-semibold text-slate-700">Peluquería Pet</span>
+                        </div>
+                      </label>
+                      <label class="cursor-pointer">
+                        <input type="radio" name="tipo_establecimiento" value="Veterinaria" class="peer hidden">
+                        <div class="p-3 border-2 border-slate-200 rounded-xl peer-checked:border-indigo-600 peer-checked:bg-indigo-50 text-center transition-all">
+                          <span class="text-2xl block mb-1">🏥</span><span class="text-sm font-semibold text-slate-700">Veterinaria</span>
+                        </div>
+                      </label>
+                      <label class="cursor-pointer">
+                        <input type="radio" name="tipo_establecimiento" value="Petshop" class="peer hidden">
+                        <div class="p-3 border-2 border-slate-200 rounded-xl peer-checked:border-indigo-600 peer-checked:bg-indigo-50 text-center transition-all">
+                          <span class="text-2xl block mb-1">🏪</span><span class="text-sm font-semibold text-slate-700">Petshop</span>
+                        </div>
+                      </label>
+                      <label class="cursor-pointer">
+                        <input type="radio" name="tipo_establecimiento" value="Otro Comercio" class="peer hidden">
+                        <div class="p-3 border-2 border-slate-200 rounded-xl peer-checked:border-indigo-600 peer-checked:bg-indigo-50 text-center transition-all">
+                          <span class="text-2xl block mb-1">🏬</span><span class="text-sm font-semibold text-slate-700">Otro Comercio</span>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <div id="form-cliente-msg" class="text-sm text-center font-medium mt-2"></div>
+                  
+                  <div class="mt-8 pt-4 border-t border-slate-100 flex justify-end gap-3">
+                    <button type="button" class="px-5 py-2.5 text-slate-600 font-bold hover:bg-slate-100 rounded-xl transition-colors" onclick="closeModal('modal-cliente')">Cancelar</button>
+                    <button type="submit" id="btn-guardar-cliente" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2">
+                      💾 Guardar Cliente
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

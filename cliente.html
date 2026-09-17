@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cliente.html</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase SDK & Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+</head>
+<body>
+    <div id="app-root" class="w-full h-full min-h-screen">
+
+<!-- LOGIN SCREEN -->
+<section id="login-view" class="min-h-screen bg-slate-50 flex items-center justify-center p-4 relative overflow-hidden">
+  <!-- blobs -->
+  <div class="absolute -top-[100px] -right-[80px] w-[340px] h-[340px] bg-indigo-100 rounded-full blur-[70px] opacity-80 pointer-events-none"></div>
+  <div class="absolute -bottom-[80px] -left-[60px] w-[280px] h-[280px] bg-amber-100 rounded-full blur-[55px] opacity-70 pointer-events-none"></div>
+
+  <div class="w-full max-w-[420px] bg-white rounded-3xl shadow-xl border-t-4 border-indigo-600 p-8 md:p-11 relative z-10">
+    <div class="text-center mb-9">
+      <div class="inline-flex items-center justify-center w-[60px] h-[60px] bg-indigo-50 rounded-2xl text-3xl mb-4 shadow-sm">🎫</div>
+      <h1 class="text-3xl font-extrabold text-slate-900 mb-1 tracking-tight">Bienvenido</h1>
+      <p class="text-sm font-medium text-slate-500">Panel de Cupones <span class="font-bold text-indigo-600">B2B</span></p>
+    </div>
+
+    <form id="form-login">
+      <div class="mb-5">
+        <label for="login-nit" class="block font-semibold text-sm text-slate-900 mb-2">C.C o NIT del Negocio</label>
+        <input type="text" id="login-nit" class="w-full p-3.5 border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all text-slate-800" placeholder="Ej: 900123456-1" required>
+      </div>
+      <div class="mb-8">
+        <label for="login-celular" class="block font-semibold text-sm text-slate-900 mb-2">Celular</label>
+        <input type="tel" id="login-celular" class="w-full p-3.5 border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all text-slate-800" placeholder="Ej: 3101234567" required>
+      </div>
+      <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+        Ingresar
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- DASHBOARD SCREEN -->
+<section id="dashboard-view" class="hidden">
+<div class="min-h-screen bg-gradient-to-br from-indigo-100 via-slate-100 to-amber-100 flex flex-col items-center py-6 px-4 md:py-10 md:px-8 font-sans">
+  <div class="w-full max-w-7xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200 flex-1">
+    
+    <!-- NAV -->
+    <nav class="flex items-center justify-between px-6 h-auto min-h-[5rem] py-3 bg-white border-b border-slate-200 shadow-sm flex-wrap gap-4">
+      <div class="flex items-center gap-2 font-extrabold text-lg text-slate-900 tracking-tight shrink-0">
+        <span class="flex items-center justify-center bg-indigo-50 rounded-xl p-2 text-base shadow-sm border border-indigo-100">🎫</span>
+        <span class="hidden sm:inline">Cupones</span>
+        <span class="text-indigo-600 hidden sm:inline">B2B</span>
+      </div>
+      
+      <!-- Logo + Nombre de Negocio + Logout -->
+      <div class="flex items-center gap-3 md:gap-5 ml-auto">
+        <div id="nav-business-info" class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 shadow-sm">
+          <img id="nav-business-logo" src="" class="w-8 h-8 md:w-12 md:h-12 object-contain rounded-lg hidden bg-white shadow-sm" alt="Logo">
+          <span id="nav-tipo-negocio" class="text-sm md:text-lg font-bold text-slate-800">Cargando...</span>
+        </div>
+        <button class="text-slate-400 hover:text-rose-600 transition-colors bg-slate-50 hover:bg-rose-50 p-2 md:p-3 rounded-xl border border-slate-100 shrink-0 shadow-sm" onclick="logoutCliente()" title="Cerrar Sesión">
+          <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- TABS -->
+    <div class="flex px-6 border-b border-slate-200 bg-slate-50 overflow-x-auto gap-4">
+        <button id="btn-tab-cupones" class="tab-btn active px-4 py-3 font-semibold text-sm border-b-2 border-indigo-600 text-indigo-600 transition-all whitespace-nowrap" onclick="switchTab('cupones')">🎟️ Mis Cupones</button>
+        <button id="btn-tab-reclamaciones" class="tab-btn px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition-all whitespace-nowrap" onclick="switchTab('reclamaciones')">📋 Reclamaciones</button>
+        <button id="btn-tab-dashboard" class="tab-btn px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition-all whitespace-nowrap" onclick="switchTab('dashboard')">📈 Analytics</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="p-6 md:p-8">
+      
+      <!-- TAB CUPONES -->
+      <div id="tab-cupones" class="tab-content block">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-slate-800">Mis Cupones</h2>
+          <button onclick="openModalCupon('add')" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold text-sm transition-all shadow-md shadow-indigo-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            Nuevo Cupón
+          </button>
+        </div>
+        <!-- Stats rápidos Cupones -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex justify-between items-center">
+            <span class="font-bold text-indigo-800">Activos</span>
+            <span class="text-2xl font-black text-indigo-600" id="stat-activos">0</span>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex justify-between items-center">
+            <span class="font-bold text-slate-600">Agotados</span>
+            <span class="text-2xl font-black text-slate-500" id="stat-agotados">0</span>
+          </div>
+        </div>
+        <div id="grid-cupones" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Cupones dinámicos -->
+        </div>
+      </div>
+
+      <!-- TAB RECLAMACIONES -->
+      <div id="tab-reclamaciones" class="tab-content hidden">
+
+      
+      <!-- Stats -->
+           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Reclamos</p>
+              <p id="stat-total-reclamos" class="text-4xl font-extrabold text-slate-900">0</p>
+            </div>
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Activos</p>
+              <p id="stat-reclamos-activos" class="text-4xl font-extrabold text-indigo-600">0</p>
+            </div>
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Canjeados</p>
+              <p id="stat-reclamos-canjeados" class="text-4xl font-extrabold text-emerald-600">0</p>
+            </div>
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Vencidos</p>
+              <p id="stat-reclamos-vencidos" class="text-4xl font-extrabold text-rose-500">0</p>
+            </div>
+          </div>
+
+      <!-- Table Section -->
+      <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+        <div class="flex justify-between items-center p-5 border-b border-slate-100">
+          <h2 class="flex items-center gap-2 font-bold text-slate-800">
+            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            Reclamaciones
+          </h2>
+          <button class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold text-sm transition-all shadow-md shadow-indigo-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            Nuevo Cupón
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-400 text-[10px] uppercase tracking-wider">
+                <th class="p-4">ID</th>
+                <th class="p-4">Cupón</th>
+                <th class="p-4">Usuario</th>
+                <th class="p-4">Celular</th>
+                <th class="p-4">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-reclamos" class="divide-y divide-slate-100">
+            </tbody>
+          </table>
+        </div>
+      </div>
+      </div> <!-- /TAB RECLAMACIONES -->
+
+      <!-- TAB DASHBOARD ANALYTICS -->
+      <div id="tab-dashboard" class="tab-content hidden">
+        <div class="mb-6">
+          <h2 class="text-xl font-bold text-slate-800">Dashboard de Rendimiento</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm">
+            <h3 class="font-bold text-slate-700 mb-4 text-sm">📍 Usuarios por Ciudad</h3>
+            <div class="h-48 relative"><canvas id="chart-ciudades"></canvas></div>
+          </div>
+          <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm">
+            <h3 class="font-bold text-slate-700 mb-4 text-sm">🐾 Distribución por Mascota</h3>
+            <div class="h-48 relative"><canvas id="chart-mascotas"></canvas></div>
+          </div>
+          <div class="bg-white border border-slate-200 p-5 rounded-xl shadow-sm lg:col-span-3">
+            <h3 class="font-bold text-slate-700 mb-4 text-sm">🏆 Top 10 Cupones más Reclamados</h3>
+            <div class="h-64 relative"><canvas id="chart-top-cupones"></canvas></div>
+          </div>
+        </div>
+      </div> <!-- /TAB DASHBOARD -->
+
+    </main>
+  </div>
+</div>
+
+<!-- MODAL CREAR/EDITAR CUPÓN -->
+<div id="modal-cupon" class="fixed inset-0 bg-slate-900/50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+        <div class="flex justify-between items-center p-5 border-b border-slate-100">
+            <h3 class="font-bold text-lg text-slate-800" id="modal-cupon-title">Nuevo Cupón</h3>
+            <button onclick="closeModalCupon()" class="text-slate-400 hover:text-slate-600 transition-colors">✕</button>
+        </div>
+        <div class="p-6 overflow-y-auto">
+            <form id="form-cupon" onsubmit="guardarCupon(event)">
+                <input type="hidden" id="cupon-action" value="add_coupon">
+                <input type="hidden" id="cupon-id-edit" value="">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block font-semibold text-sm text-slate-700 mb-1">Título del Cupón *</label>
+                        <input id="c-titulo" type="text" required class="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block font-semibold text-sm text-slate-700 mb-1">Descripción</label>
+                        <textarea id="c-desc" rows="2" class="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm text-slate-700 mb-1">Tipo *</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2"><input type="radio" name="c-tipo" value="Producto" required> Producto 📦</label>
+                            <label class="flex items-center gap-2"><input type="radio" name="c-tipo" value="Servicio"> Servicio 🛁</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm text-slate-700 mb-1">Mascota *</label>
+                        <div class="flex gap-4 text-sm">
+                            <label class="flex items-center gap-1"><input type="radio" name="c-mascota" value="Perro" required> Perro</label>
+                            <label class="flex items-center gap-1"><input type="radio" name="c-mascota" value="Gato"> Gato</label>
+                            <label class="flex items-center gap-1"><input type="radio" name="c-mascota" value="Ambos"> Ambos</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm text-slate-700 mb-1">Categoría *</label>
+                        <select id="c-categoria" required class="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20">
+                            <option value="">Seleccionar...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm text-slate-700 mb-1">% Descuento *</label>
+                        <input id="c-descuento" type="number" required min="1" max="100" class="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm text-slate-700 mb-1">Ciudad *</label>
+                        <input id="c-ciudad" type="text" required list="lista-ciudades-c" class="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20">
+                        <datalist id="lista-ciudades-c"></datalist>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm text-slate-700 mb-1">Vencimiento *</label>
+                        <input id="c-vencimiento" type="date" required class="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm text-slate-700 mb-1">Cantidad Máxima *</label>
+                        <input id="c-cantidad" type="number" required min="1" class="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm text-slate-700 mb-1">URL Imagen</label>
+                        <input id="c-imagen" type="url" class="w-full p-2 border border-slate-200 rounded-lg outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20">
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button type="button" onclick="closeModalCupon()" class="px-4 py-2 rounded-lg font-bold text-sm bg-slate-100 text-slate-600 hover:bg-slate-200">Cancelar</button>
+                    <button type="submit" id="btn-guardar-cupon" class="px-4 py-2 rounded-lg font-bold text-sm bg-indigo-600 text-white hover:bg-indigo-700 shadow-md">💾 Guardar Cupón</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</section>
+    </div>
+    <script src="js/api.js"></script>
+    <script src="js/cliente.js"></script>
+</body>
+</html>

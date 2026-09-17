@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <radialGradient id="ig" cx="19.38" cy="42.035" r="44.899" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fd5"/>
+    <stop offset=".328" stop-color="#ff543f"/>
+    <stop offset=".348" stop-color="#fc5245"/>
+    <stop offset=".504" stop-color="#e64771"/>
+    <stop offset=".643" stop-color="#d53e91"/>
+    <stop offset=".761" stop-color="#cc39a4"/>
+    <stop offset=".841" stop-color="#c837ab"/>
+  </radialGradient>
+  <path fill="url(#ig)" d="M34.017 41.99H14c-4.4 0-8-3.6-8-8V14.003c0-4.4 3.6-8 8-8h20.017c4.4 0 7.983 3.6 7.983 8V33.99c0 4.4-3.583 8-7.983 8z"/>
+  <path fill="#fff" d="M24 31a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-11.6a4.6 4.6 0 1 0 0 9.2 4.6 4.6 0 0 0 0-9.2zM34 17.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+</svg>
