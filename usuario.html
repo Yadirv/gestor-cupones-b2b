@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Cupones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+</head>
+<body class="bg-slate-50 font-sans text-slate-900">
+    <div id="app-root" class="w-full h-full min-h-screen">
+      
+      <!-- HERO -->
+      <header class="relative bg-gradient-to-br from-indigo-600 via-indigo-700 to-slate-900 text-white text-center pt-16 pb-14 overflow-hidden">
+        <div class="relative z-10 max-w-lg mx-auto">
+          <div class="text-6xl mb-2">🐾</div>
+          <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-3 drop-shadow-lg">Gestor de Cupones</h1>
+          <p class="text-indigo-100 text-lg">Descuentos exclusivos para tu mascota ✨</p>
+        </div>
+      </header>
+
+      <!-- SECCION REGISTRO -->
+      <section id="registro-view" class="max-w-xl mx-auto px-4 py-10">
+        <!-- Stepper -->
+        <div class="flex items-center justify-center max-w-xs mx-auto mb-8">
+          <div class="flex flex-col items-center gap-2 flex-1">
+            <div class="w-10 h-10 rounded-full border-2 border-indigo-600 bg-indigo-600 text-white flex items-center justify-center font-bold shadow-[0_0_0_4px_rgba(79,70,229,0.15)]">1</div>
+            <span class="text-xs font-bold text-indigo-600 tracking-wide">Tus datos</span>
+          </div>
+          <div class="h-[2px] bg-slate-200 flex-[0_0_64px] mb-[22px]"></div>
+          <div class="flex flex-col items-center gap-2 flex-1">
+            <div class="w-10 h-10 rounded-full border-2 border-slate-200 bg-white text-slate-400 flex items-center justify-center font-bold">2</div>
+            <span class="text-xs text-slate-400 font-medium tracking-wide">Cupones</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-[22px] shadow-xl shadow-indigo-600/5 border border-indigo-600/10 p-8 md:p-10">
+          
+          <!-- TABS -->
+          <div class="flex border-b border-slate-200 mb-6">
+            <button id="tab-registro-btn" class="flex-1 py-3 text-sm font-bold border-b-2 border-indigo-600 text-indigo-600 transition-colors" onclick="toggleAuthView('registro')">Registrarme</button>
+            <button id="tab-login-btn" class="flex-1 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition-colors" onclick="toggleAuthView('login')">Ya tengo cuenta</button>
+          </div>
+
+          <div id="view-registro">
+            <h2 class="text-xl font-extrabold text-slate-800 mb-6">👋 ¡Hola! Cuéntanos de ti</h2>
+            <form id="form-registro">
+            <div class="mb-5">
+              <label for="u-nombre" class="block text-sm font-bold text-slate-800 mb-1.5">Nombre Completo <span class="text-rose-500">*</span></label>
+              <input type="text" id="u-nombre" class="w-full p-3.5 border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all" placeholder="Ej: Carlos Rodríguez" required>
+            </div>
+            <div class="mb-5">
+              <label for="u-celular" class="block text-sm font-bold text-slate-800 mb-1.5">Celular <span class="text-rose-500">*</span></label>
+              <input type="tel" id="u-celular" class="w-full p-3.5 border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all" placeholder="Ej: 3001234567" required>
+              <div class="mt-2 flex items-start gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800 p-2.5 rounded-lg text-xs leading-relaxed">
+                <span>📱</span> Ingresa un número con <strong>WhatsApp activo</strong> para recibir tu cupón de confirmación.
+              </div>
+            </div>
+            <div class="mb-5">
+              <label for="u-cc-nit" class="block text-sm font-bold text-slate-800 mb-1.5">Cédula o NIT <span class="text-rose-500">*</span></label>
+              <input type="text" id="u-cc-nit" class="w-full p-3.5 border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all" placeholder="Ej: 1012345678" required>
+            </div>
+            <div class="mb-5">
+              <label for="u-mascota" class="block text-sm font-bold text-slate-800 mb-1.5">Mascota Principal <span class="text-rose-500">*</span></label>
+              <div class="grid grid-cols-3 gap-3">
+                <label class="cursor-pointer">
+                  <input type="radio" name="mascota" value="Perro" class="peer hidden" required>
+                  <div class="border border-slate-200 rounded-xl p-3 text-center peer-checked:border-indigo-600 peer-checked:bg-indigo-50 peer-checked:text-indigo-700 transition-all">
+                    <div class="text-2xl mb-1">🐕</div>
+                    <div class="text-xs font-bold">Perro</div>
+                  </div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="mascota" value="Gato" class="peer hidden" required>
+                  <div class="border border-slate-200 rounded-xl p-3 text-center peer-checked:border-indigo-600 peer-checked:bg-indigo-50 peer-checked:text-indigo-700 transition-all">
+                    <div class="text-2xl mb-1">🐈</div>
+                    <div class="text-xs font-bold">Gato</div>
+                  </div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="mascota" value="Ambos" class="peer hidden" required>
+                  <div class="border border-slate-200 rounded-xl p-3 text-center peer-checked:border-indigo-600 peer-checked:bg-indigo-50 peer-checked:text-indigo-700 transition-all">
+                    <div class="text-2xl mb-1">🐾</div>
+                    <div class="text-xs font-bold">Ambos</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+            <div class="mb-5">
+              <label for="u-ciudad" class="block text-sm font-bold text-slate-800 mb-1.5">Ciudad <span class="text-rose-500">*</span></label>
+              <input type="text" id="u-ciudad" list="lista-ciudades-u" class="w-full p-3.5 border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all" placeholder="Ej: Bogotá" required>
+              <datalist id="lista-ciudades-u"></datalist>
+            </div>
+            
+            <div class="mb-5">
+              <label for="u-cod-tienda" class="block text-sm font-bold text-slate-800 mb-1.5">Código de Acceso de la Tienda <span class="text-rose-500">*</span></label>
+              <input type="text" id="u-cod-tienda" class="w-full p-3.5 border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all uppercase" placeholder="Ej: VET123" required>
+            </div>
+            <div class="mb-5">
+              <label class="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" required class="mt-1 w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600">
+                <span class="text-sm text-slate-600">Acepto la <a href="javascript:abrirTerminos()" class="text-indigo-600 underline font-medium hover:text-indigo-800">política de tratamiento de datos y términos de cupones</a>, y autorizo recibir mensajes por WhatsApp.</span>
+              </label>
+            </div>
+            
+            <button type="submit" id="btn-registrar" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 mt-6">
+              Continuar y ver Cupones →
+            </button>
+          </form>
+          </div>
+
+          <!-- LOGIN VIEW -->
+          <div id="view-login" class="hidden">
+            <h2 class="text-xl font-extrabold text-slate-800 mb-6">🔑 Iniciar Sesión</h2>
+            <form id="form-login-usuario">
+               <div class="mb-5">
+                 <label for="l-cc-nit" class="block text-sm font-bold text-slate-800 mb-1.5">Cédula o NIT <span class="text-rose-500">*</span></label>
+                 <input type="text" id="l-cc-nit" class="w-full p-3.5 border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all" placeholder="Ej: 1012345678" required>
+               </div>
+               <div class="mb-5">
+                 <label for="l-celular" class="block text-sm font-bold text-slate-800 mb-1.5">Celular <span class="text-rose-500">*</span></label>
+                 <input type="tel" id="l-celular" class="w-full p-3.5 border border-slate-200 rounded-xl outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all" placeholder="Ej: 3001234567" required>
+               </div>
+               <button type="submit" id="btn-login-usuario" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 mt-6">
+                 Ingresar y ver Cupones →
+               </button>
+            </form>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SECCION CATALOGO -->
+      <section id="catalogo-view" class="hidden">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+          
+          <div class="mb-8 text-center" id="saludo-container">
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-800" id="saludo-usuario">¡Hola! Estos son tus cupones</h2>
+            <p class="text-slate-500 mt-2 text-sm md:text-base">Encuentra los mejores beneficios para tu mascota</p>
+          </div>
+
+          <!-- Filtros -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+            <input type="text" id="f-busqueda" placeholder="Buscar por nombre o negocio..." class="w-full p-3.5 border-2 border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-600 transition-all" oninput="aplicarFiltros()">
+            
+            <select id="f-ciudad" class="w-full p-3.5 border-2 border-slate-200 rounded-xl text-sm outline-none bg-white" onchange="aplicarFiltros()">
+              <option value="">Todas las ciudades</option>
+            </select>
+            
+            <select id="f-mascota" class="w-full p-3.5 border-2 border-slate-200 rounded-xl text-sm outline-none bg-white" onchange="aplicarFiltros()">
+              <option value="">Todas las mascotas</option>
+              <option value="Perro">Perro</option>
+              <option value="Gato">Gato</option>
+            </select>
+
+            <select id="f-orden" class="w-full p-3.5 border-2 border-slate-200 rounded-xl text-sm outline-none bg-white" onchange="aplicarFiltros()">
+              <option value="">Más recientes</option>
+              <option value="desc-mayor">Mayor descuento</option>
+              <option value="desc-menor">Menor descuento</option>
+            </select>
+          </div>
+
+          <div class="text-sm font-bold text-slate-500 mb-4" id="filtros-count">0 cupones disponibles</div>
+
+          <!-- Grid de Cupones -->
+          <div id="skeleton-loader" class="text-center py-10 hidden">
+              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+              <p class="text-slate-500 mt-4 font-medium">Buscando cupones...</p>
+          </div>
+          
+          <div id="grid-pub" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dinámico -->
+          </div>
+        </div>
+      </section>
+
+      <!-- MODAL CONFIRMACION -->
+      <div id="modal-confirmacion" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[24px] shadow-2xl max-w-sm w-full overflow-hidden text-center p-6 md:p-8">
+            <div id="conf-img" class="w-full h-40 bg-slate-100 rounded-xl mb-6 flex items-center justify-center text-4xl overflow-hidden">🎫</div>
+            <h3 id="conf-titulo" class="text-xl font-bold text-slate-800 mb-2">Título del Cupón</h3>
+            <p id="conf-negocio" class="text-sm font-medium text-slate-500 mb-6">Nombre del Negocio</p>
+            
+            <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-6">
+                <p class="text-xs text-indigo-800 font-medium">Al reclamar, recibirás un mensaje de confirmación por WhatsApp en tu número registrado.</p>
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="cerrarConfirmacion()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl transition-colors">Cancelar</button>
+                <button id="btn-reclamar" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all">¡Reclamar!</button>
+            </div>
+        </div>
+      </div>
+
+      <!-- MODAL EXITO -->
+      <div id="modal-exito" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[24px] shadow-2xl max-w-sm w-full overflow-hidden p-6 md:p-8 transform transition-all duration-300 scale-100">
+            
+            <div class="flex items-center justify-center w-16 h-16 mx-auto bg-green-100 rounded-full mb-4">
+                <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            
+            <h3 class="text-2xl font-black text-center text-slate-800 mb-2">¡Felicidades!</h3>
+            <p class="text-center text-slate-600 font-medium mb-6 leading-relaxed">Cupón Reclamado. En pocos minutos serás contactado para más detalles.</p>
+            
+            <!-- Datos del negocio -->
+            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 mb-6">
+                <div class="flex items-center gap-4 mb-3">
+                    <div id="exito-img" class="w-12 h-12 bg-slate-200 rounded-full flex-shrink-0 overflow-hidden flex items-center justify-center text-xl">🏬</div>
+                    <div>
+                        <h4 id="exito-negocio" class="font-bold text-slate-800 leading-tight">Nombre Negocio</h4>
+                        <p id="exito-ciudad" class="text-xs text-slate-500">Ciudad</p>
+                    </div>
+                </div>
+                <div id="exito-contacto-btn" class="mt-4">
+                    <!-- Botón WhatsApp B2B Dinámico -->
+                </div>
+            </div>
+            
+            <button onclick="cerrarExito()" class="w-full py-3.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow-lg shadow-slate-800/30 transition-all">Aceptar y Continuar</button>
+        </div>
+      </div>
+
+      <!-- MODAL TERMINOS Y CONDICIONES -->
+      <div id="modal-terminos" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[24px] shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-lg text-slate-800 flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-indigo-600"></i> Términos y Condiciones</h3>
+                <button onclick="cerrarTerminos()" class="text-slate-400 hover:text-slate-600 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto text-sm text-slate-600 leading-relaxed space-y-4">
+                <h4 class="font-bold text-slate-800 text-base">Políticas de Uso de Cupones</h4>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Un cupón por comercio:</strong> Solo podrás reclamar un único cupón por cada establecimiento comercial (negocio o tienda) asociado al programa.</li>
+                    <li><strong>Múltiples comercios el mismo día:</strong> Si realizas compras en <em>diferentes</em> comercios, podrás reclamar un cupón distinto por cada comercio donde adquieras la promoción, en el mismo día.</li>
+                    <li><strong>No acumulables:</strong> Los cupones no son acumulables. Si adquieres varios productos con promoción en el mismo negocio simultáneamente, solo podrás redimir un (1) cupón en ese comercio.</li>
+                    <li><strong>Confirmación:</strong> La entrega y confirmación del cupón está sujeta a la validación de los datos. Se enviará una notificación vía WhatsApp.</li>
+                </ul>
+                <h4 class="font-bold text-slate-800 text-base mt-6">Tratamiento de Datos Personales</h4>
+                <p>Al registrarte, autorizas el almacenamiento de tus datos personales (Nombre, Celular, Cédula, Ciudad y Mascota) con el fin único de gestionar la entrega de cupones promocionales y enviar notificaciones vía WhatsApp sobre el estado de tus cupones.</p>
+            </div>
+            <div class="p-6 border-t border-slate-100">
+                <button onclick="cerrarTerminos()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-md">Entendido</button>
+            </div>
+        </div>
+      </div>
+
+    </div>
+    <script src="js/api.js?v=3"></script>
+    <script src="js/usuario.js?v=3"></script>
+    <!-- Vercel Trigger Redeploy 3 -->
+</body>
+</html>
